@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Daymark — a calmer task planner</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Daymark home"><span class="brand-mark">d</span><span>daymark</span></a>
+      <p class="side-label">WORKSPACE</p>
+      <nav class="nav-list" aria-label="Task views">
+        <button class="nav-item active" data-filter="all"><span class="nav-icon">▦</span> All tasks <span class="nav-count" id="all-count">0</span></button>
+        <button class="nav-item" data-filter="today"><span class="nav-icon">◷</span> Today <span class="nav-count" id="today-count">0</span></button>
+        <button class="nav-item" data-filter="pinned"><span class="nav-icon">★</span> Pinned</button>
+        <button class="nav-item" data-filter="upcoming"><span class="nav-icon">▤</span> Upcoming</button>
+        <button class="nav-item" data-filter="done"><span class="nav-icon">✓</span> Completed</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="tip-icon">✓</div><strong>A little progress<br>goes a long way.</strong><p>Keep your focus on what matters today.</p></div>
+      <button class="profile" id="profile-open" type="button" aria-label="Open profile settings"><span class="avatar" id="sidebar-avatar">Y</span><span class="profile-copy"><strong id="sidebar-username">Your profile</strong><small>Profile & security</small></span><span class="dots">···</span></button>
+    </aside>
+
+    <section class="main-panel">
+      <header class="topbar"><div class="breadcrumbs">Workspace <span>/</span> <b id="crumb">All tasks</b></div><div class="top-actions"><span class="date-label" id="date-label"></span><button class="icon-button" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">◐</button><button class="top-profile" id="top-profile-open" aria-label="Open profile settings"><span class="avatar" id="top-avatar">Y</span></button></div></header>
+      <div class="content">
+        <section class="welcome"><div><p class="eyebrow" id="today-date"></p><h1 id="page-title">Make room for what matters.</h1><p class="subtitle">A clear mind starts with a clear plan.</p></div><div class="progress-card"><div class="progress-copy"><span>DAILY PROGRESS</span><strong id="progress-text">0 of 0 done</strong></div><div class="progress-track"><div id="progress-fill"></div></div></div></section>
+
+        <section class="task-section">
+          <div class="section-heading"><div><h2 id="list-title">Your tasks</h2><span id="task-summary">A fresh start. Add your first task.</span></div><div class="task-actions"><button type="button" class="secondary-button clear-tasks-button hidden" id="clear-tasks">Clear all</button><button class="primary-button" id="open-form"><span>＋</span> Add task</button></div></div>
+          <form class="task-form hidden" id="task-form">
+            <div class="form-top"><label class="sr-only" for="task-title">Task name</label><input id="task-title" maxlength="120" placeholder="What needs to get done?" required><button type="button" class="close-form" id="close-form" aria-label="Close">×</button></div>
+            <div class="form-bottom"><div class="form-options"><label class="select-wrap"><span>◷</span><input type="date" id="task-date" aria-label="Due date"></label><label class="select-wrap"><span>⚑</span><select id="task-priority" aria-label="Priority"><option value="normal">Normal priority</option><option value="high">High priority</option><option value="low">Low priority</option></select></label></div><button class="save-button" type="submit">Save task <span>↵</span></button></div>
+          </form>
+          <div class="task-list" id="task-list"></div>
+          <div class="empty-state" id="empty-state"><div class="empty-art"><span>✓</span></div><h3>Nothing on your list yet</h3><p>Give your next task a home and get it off your mind.</p><button class="text-button" id="empty-add">＋ Add your first task</button></div>
+        </section>
+        <footer>Made for focused days <span>✳</span></footer>
+      </div>
+    </section>
+  </main>
+  <section class="auth-screen" id="auth-screen" aria-live="polite">
+    <div class="auth-card">
+      <a class="auth-brand" href="#"><span class="brand-mark">d</span><span>daymark</span></a>
+      <div class="auth-symbol" id="auth-symbol">◉</div>
+      <p class="auth-eyebrow" id="auth-eyebrow">YOUR PRIVATE WORKSPACE</p>
+      <h1 id="auth-title">Create your profile</h1>
+      <p class="auth-intro" id="auth-intro">Set up your name and a six-word PIN to keep this browser profile private.</p>
+      <form id="setup-form" class="auth-form hidden" novalidate>
+        <label>Your name<input id="setup-name" maxlength="40" autocomplete="nickname" placeholder="e.g. Alex" required></label>
+        <label>Six-word PIN<div class="pin-entry" data-pin-group="setup-password" aria-label="Six-word PIN"></div><small class="pin-hint">Enter any six words. It advances automatically after a short pause.</small></label>
+        <label>Confirm six-word PIN<div class="pin-entry" data-pin-group="setup-confirm" aria-label="Confirm six-word PIN"></div></label>
+        <div class="recovery-fields"><div class="recovery-heading"><strong>Recovery questions</strong><span>Choose 3 questions you can answer later.</span></div>
+          <label>Question 1<select class="question-select" data-set="setup" id="setup-q1" aria-label="Recovery question 1"></select><input class="question-custom hidden" id="setup-custom-q1" placeholder="Write your question" aria-label="Custom recovery question 1"><input id="setup-a1" autocomplete="off" placeholder="Your answer" required></label>
+          <label>Question 2<select class="question-select" data-set="setup" id="setup-q2" aria-label="Recovery question 2"></select><input class="question-custom hidden" id="setup-custom-q2" placeholder="Write your question" aria-label="Custom recovery question 2"><input id="setup-a2" autocomplete="off" placeholder="Your answer" required></label>
+          <label>Question 3<select class="question-select" data-set="setup" id="setup-q3" aria-label="Recovery question 3"></select><input class="question-custom hidden" id="setup-custom-q3" placeholder="Write your question" aria-label="Custom recovery question 3"><input id="setup-a3" autocomplete="off" placeholder="Your answer" required></label>
+        </div>
+        <p class="form-error" id="setup-error" role="alert"></p><button class="auth-submit" type="submit">Create profile <span>→</span></button>
+        <p class="privacy-note">Saved only in this browser on this device. This is a personal lock, not encrypted vault storage.</p>
+      </form>
+      <form id="login-form" class="auth-form hidden" novalidate>
+        <label>Six-word PIN<div class="pin-entry" data-pin-group="login-password" aria-label="Six-word PIN"></div><small class="pin-hint">Enter your six words in order. It advances after a short pause.</small></label>
+        <p class="form-error" id="login-error" role="alert"></p><button class="auth-submit" type="submit">Unlock Daymark <span>→</span></button>
+        <button class="auth-link" type="button" id="forgot-link">Forgot your PIN?</button>
+      </form>
+      <form id="recovery-form" class="auth-form hidden" novalidate>
+        <p class="recovery-progress" id="recovery-progress">Question 1 of 3</p>
+        <label id="recovery-question-wrap"><span id="recovery-question-label">Recovery question</span><input id="recovery-answer" autocomplete="off" placeholder="Your answer" required></label>
+        <div id="recovery-reset" class="hidden recovery-reset"><label>New six-word PIN<div class="pin-entry" data-pin-group="recovery-new-password" aria-label="New six-word PIN"></div></label><label>Confirm six-word PIN<div class="pin-entry" data-pin-group="recovery-new-confirm" aria-label="Confirm six-word PIN"></div></label></div>
+        <p class="form-error" id="recovery-error" role="alert"></p><button class="auth-submit" id="recovery-submit" type="submit">Continue <span>→</span></button>
+        <button class="auth-link" type="button" id="back-login">Back to sign in</button>
+      </form>
+      <div class="auth-decoration"><span></span><span></span><span></span></div>
+    </div>
+  </section>
+  <dialog class="app-dialog" id="task-edit-dialog">
+    <form class="dialog-card" id="task-edit-form" method="dialog">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">TASK DETAILS</p><h2>Edit task</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <label class="field-label">Task name<input id="edit-task-title" maxlength="120" required></label>
+      <label class="field-label">Due date<input id="edit-task-date" type="date"></label>
+      <label class="field-label">Priority<select id="edit-task-priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select></label>
+      <p class="form-error" id="edit-task-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>Cancel</button><button class="auth-submit" type="submit">Save changes</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="profile-dialog">
+    <form class="dialog-card profile-editor" id="profile-form" method="dialog">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">YOUR ACCOUNT</p><h2>My profile</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <div class="photo-editor"><span class="avatar photo-preview" id="profile-avatar">Y</span><div class="photo-details"><strong>Profile picture</strong><small>Choose an image from your device library or use your initials.</small><div class="photo-actions"><label class="upload-button" for="profile-photo">Choose picture</label><button class="upload-button" type="button" id="reset-profile-photo">Reset to initials</button></div><input class="hidden" type="file" id="profile-photo" accept="image/*"></div></div>
+      <label class="field-label avatar-color-field">Initial background color<input id="avatar-color" type="color" value="#e7d8c6" aria-label="Initial avatar background color"></label>
+      <label class="field-label">Username<input id="profile-name" maxlength="40" required></label>
+      <label class="field-label theme-label">Appearance<select id="theme-select" aria-label="Choose a color theme"><option value="forest">Forest</option><option value="ocean">Ocean</option><option value="lavender">Lavender</option><option value="rose">Rose</option><option value="sunset">Sunset</option><option value="amber">Amber</option><option value="mint">Mint</option><option value="sky">Sky</option><option value="berry">Berry</option><option value="slate">Slate</option><option value="midnight">Midnight</option><option value="cocoa">Cocoa</option><option value="cherry">Cherry</option><option value="teal">Teal</option><option value="orchid">Orchid</option><option value="sand">Sand</option><option value="emerald">Emerald</option><option value="graphite">Graphite</option><option value="lemon">Lemon</option><option value="coral">Coral</option></select></label>
+      <section class="data-settings" aria-label="Data and installation"><div class="data-setting-row"><div><strong>Local data encryption</strong><small id="encryption-status">Tasks are stored in this browser.</small></div><button type="button" class="upload-button" id="encryption-toggle">Encrypt tasks</button></div><div class="data-setting-row"><div><strong>Backups</strong><small>Export, import, or restore saved task lists.</small></div><button type="button" class="upload-button" id="backup-open">Manage backups</button></div><div class="data-setting-row"><div><strong>Install Daymark</strong><small>Use Daymark like an app and open it offline.</small></div><button type="button" class="upload-button" id="install-button">Install</button></div></section>
+      <div class="profile-meta"><span id="password-state">PIN protection is on</span><button type="button" class="auth-link" id="change-password">Change PIN</button></div>
+      <p class="form-error" id="profile-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="secondary-button" id="password-toggle">Disable PIN</button><button type="button" class="secondary-button" id="lock-profile">Lock profile</button><button class="auth-submit" type="submit">Save profile</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="backup-dialog">
+    <div class="dialog-card backup-card">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">YOUR DATA</p><h2>Backup & restore</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <p class="backup-intro">Download an encrypted JSON backup protected by your six-word PIN. You’ll need that PIN to restore it. Local snapshots are checked before they’re restored.</p>
+      <button class="auth-submit" type="button" id="export-tasks">Download encrypted backup</button>
+      <div class="import-box"><label class="field-label">Import a JSON backup<input type="file" id="import-tasks-file" accept=".json,application/json"></label><label class="field-label">When importing<select id="import-mode"><option value="merge">Merge with current tasks</option><option value="replace">Replace current tasks</option></select></label><button class="secondary-button" type="button" id="import-tasks">Import selected file</button></div>
+      <div class="restore-box"><label class="field-label">Previous local snapshots<select id="restore-select"><option value="">No snapshots yet</option></select></label><button class="secondary-button" type="button" id="restore-snapshot">Restore selected snapshot</button></div>
+      <label class="field-label">Backup reminder<select id="backup-reminder-interval"><option value="7">Every week</option><option value="14">Every 2 weeks</option><option value="30">Every month</option><option value="0">Off</option></select></label>
+      <p class="form-error" id="backup-error" role="alert"></p>
+    </div>
+  </dialog>
+  <dialog class="app-dialog" id="backup-pin-dialog">
+    <form class="dialog-card" id="backup-pin-form">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">ENCRYPTED BACKUP</p><h2 id="backup-pin-title">Enter backup PIN</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <p class="backup-intro" id="backup-pin-copy">Enter the six-word PIN used when this backup was downloaded.</p>
+      <label class="field-label" id="backup-pin-label">Six-word PIN<div class="pin-entry" data-pin-group="backup-password" aria-label="Six-word PIN"></div></label>
+      <p class="form-error" id="backup-pin-error" role="alert"></p>
+      <div class="dialog-actions"><button class="secondary-button" type="button" id="backup-pin-cancel">Cancel</button><button class="auth-submit" type="submit" id="backup-pin-submit">Continue</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="encryption-dialog">
+    <form class="dialog-card" id="encryption-form" method="dialog">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">PRIVATE STORAGE</p><h2>Encrypt local tasks</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <p class="backup-intro">Tasks will be encrypted with your six-word PIN. Your recovery answers will also be able to unlock them if you forget your PIN.</p>
+      <div class="encryption-answers" id="encryption-answers"></div>
+      <p class="form-error" id="encryption-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>Cancel</button><button class="auth-submit" type="submit">Encrypt tasks</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="backup-reminder-dialog"><div class="dialog-card message-card"><div class="message-icon">↻</div><h2>Time for a quick backup?</h2><p>It’s been a while since you saved a copy of your Daymark tasks.</p><div class="dialog-actions"><button class="secondary-button" id="backup-remind-later" type="button">Remind me later</button><button class="auth-submit" id="backup-remind-export" type="button">Export tasks</button></div></div></dialog>
+  <dialog class="app-dialog" id="security-dialog">
+    <form class="dialog-card" id="security-form" method="dialog">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">ACCOUNT SECURITY</p><h2 id="security-title">Change six-word PIN</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+        <label class="field-label">New six-word PIN<div class="pin-entry" data-pin-group="new-password" aria-label="New six-word PIN"></div><small class="pin-hint">Enter any six words. It advances automatically after a short pause.</small></label>
+      <label class="field-label">Confirm six-word PIN<div class="pin-entry" data-pin-group="new-password-confirm" aria-label="Confirm six-word PIN"></div></label>
+      <div class="recovery-heading security-recovery-heading"><strong>Refresh recovery answers</strong><span>Set all 3 questions and answers again.</span></div>
+      <div class="security-question"><select class="question-select" data-set="security" id="security-q1" aria-label="Recovery question 1"></select><input class="question-custom hidden" id="security-custom-q1" placeholder="Write your question" aria-label="Custom recovery question 1"><input id="security-a1" autocomplete="off" placeholder="Answer" required></div>
+      <div class="security-question"><select class="question-select" data-set="security" id="security-q2" aria-label="Recovery question 2"></select><input class="question-custom hidden" id="security-custom-q2" placeholder="Write your question" aria-label="Custom recovery question 2"><input id="security-a2" autocomplete="off" placeholder="Answer" required></div>
+      <div class="security-question"><select class="question-select" data-set="security" id="security-q3" aria-label="Recovery question 3"></select><input class="question-custom hidden" id="security-custom-q3" placeholder="Write your question" aria-label="Custom recovery question 3"><input id="security-a3" autocomplete="off" placeholder="Answer" required></div>
+      <p class="form-error" id="security-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>Cancel</button><button class="auth-submit" type="submit" id="security-submit">Update security</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="pin-dialog">
+    <form class="dialog-card pin-card" id="pin-form">
+      <div class="dialog-heading"><div><p class="auth-eyebrow">CONFIRM IT’S YOU</p><h2 id="pin-title">Enter your six-word PIN</h2></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <p class="pin-copy" id="pin-copy">Enter your current six-word PIN to continue.</p><label class="field-label">Current six-word PIN<div class="pin-entry" data-pin-group="pin-password" aria-label="Current six-word PIN"></div></label><p class="form-error" id="pin-error" role="alert"></p><div class="dialog-actions"><button type="button" class="secondary-button" data-close-dialog>Cancel</button><button class="auth-submit" type="submit">Verify & continue</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog message-dialog" id="message-dialog"><div class="dialog-card message-card"><div class="message-icon" id="message-icon">i</div><h2 id="message-title">Notice</h2><p id="message-copy"></p><div class="dialog-actions"><button class="secondary-button hidden" id="message-cancel" type="button">Cancel</button><button class="auth-submit" id="message-ok" type="button">Got it</button></div></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="data-tools.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
